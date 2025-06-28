@@ -11,6 +11,11 @@ RUN if [ -z "$DGID" ]; then export DGID=1000 ; fi ;\
     useradd  --uid ${DUID} --gid ${DGID} -m --shell /bin/bash gocompiler
 
 WORKDIR /home/gocompiler
+
+COPY run-go.sh /home/gocompiler/run-go.sh
+RUN chown gocompiler:gocompiler /home/gocompiler/run-go.sh
+RUN chmod 775 /home/gocompiler/run-go.sh
+
 COPY snooze.sh /home/gocompiler/snooze.sh
 RUN chown gocompiler:gocompiler /home/gocompiler/snooze.sh
 RUN chmod 775 /home/gocompiler/snooze.sh
@@ -23,13 +28,7 @@ RUN mkdir /home/gocompiler/app
 RUN chmod 775 /home/gocompiler/app
 RUN chown gocompiler:gocompiler /home/gocompiler/app
 
+WORKDIR /home/gocompiler/app
+
 USER gocompiler
-CMD ["/home/gocompiler/snooze.sh"]
-
-
-#COPY hello.go ./
-#RUN go mod init hello
-#
-#RUN go build -o hello .
-#CMD ["./hello"]
-
+ENTRYPOINT ["/home/gocompiler/run-go.sh"]
