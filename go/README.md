@@ -8,6 +8,8 @@ Encapsulates everything you need to manage a Golang project without having Golan
 - Run Golang commands as if "go" is installed locally
 - Shell into the image to snoop around
 
+### You may also wish to look at [Getting Started](./GettingStarted.md)
+
 ---
 
 ## Build the local image
