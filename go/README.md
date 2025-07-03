@@ -1,6 +1,14 @@
 # The Golang Builder
 
-Encapsulates everything you need to manage a Golang project without having Golang installed on your local machine. The basic steps for getting started are:
+The Golang Builder encapsulates everything you need to manage a Golang project without having Golang installed on your local machine.  Or at least that is the goal. You might ask yourself - why would I do that? 
+
+I previously wrote a simple timer application that visually resembles a cheap kitchen tool. One sets a number of hours, minutes, or seconds, and the timer counts down to zero and then beeps annoyingly until acknowledged. I wrote this tool using C++ and [wxWidgets](https://wxwidgets.org/).  Turns out that I had to recompile the source for each of my target computers because they all use notably different GUI environments, despite all being GNU/Linux based (think XFCE vs KDE and etcetera).
+
+I remember reading that Go is statically compiled. I like the idea that any code I compile could be immediately used on another computer, so I thought I'd give this a try. I want to explore Golang's [fyne](https://fyne.io/) environment to see how it looks, and if it meets my goals.
+
+Point being that I want to specifically not have any Golang environment on my daily beater O.S. at all - so if I can run the app *here* after compiling from a Docker image, then I can run it *elsewhere* as well.
+
+**The basic steps for getting started are:**
 
 - Have the Docker container software installed on your local machine - details of which are beyond the scope of this document
 - Build the local image
