@@ -11,9 +11,12 @@ Point being that I want to specifically not have any Golang environment on my da
 **The basic steps for getting started are:**
 
 - Have the Docker container software installed on your local machine - details of which are beyond the scope of this document
-- Build the local image
-- Add an alias for ease of use
+- Build the local image for *go* proper
+- Build the local image for *fyne*
+- Add a *go* alias for ease of use of Golang
+- Add a *fyne* alias for ease of use of Fyne
 - Run Golang commands as if "go" is installed locally
+- Run Fyne commands as if "fyne" is installed locally
 - Shell into the image to snoop around
 
 ### You may also wish to look at [Getting Started](./GettingStarted.md)
@@ -37,7 +40,7 @@ You'll want to build the image with your own numbers if either number is somethi
 
 Note that the majority of the size of the Docker image comes from the Golang Docker base image.  Having multiple copies with the local addition of local tools will not bloat your computer by any significant amount.
 
-### How to build
+### How to build Golang's "go"
 
 From here out, my instructions assume you will always use the tag "go:latest".  Adjust accordingly if you choose another tag.
 
@@ -61,9 +64,30 @@ From here out, my instructions assume you will always use the tag "go:latest".  
 
 `docker build --build-arg DUID=$(id -u dot) --build-arg DGID=$(id -g dot) -t go:dot .`
 
+### Building Fyne
+
+Be sure you have a working *go* image before trying this.  Your next commands will look similiar to what you did with *go* except that you are going to substitute "fyne" instead.  So examples are
+
+`docker build -t fyne:latest -f Dockerfile.fyne .`
+
+Or
+
+docker build --build-arg DUID=$(id -u) --build-arg DGID=$(id -g) -t fyne:latest .` 
+
+Or
+
+`docker build --build-arg DUID=$(id -u yakko) --build-arg DGID=$(id -g yakko) -t fyne:yakko .`
+
+`docker build --build-arg DUID=$(id -u wakko) --build-arg DGID=$(id -g wakko) -t fyne:wakko .`
+
+`docker build --build-arg DUID=$(id -u dot) --build-arg DGID=$(id -g dot) -t fyne:dot .`
+
+Depending on what you did for *go*.
+
+
 ---
 
-### Adding an alias for ease of use
+### Adding aliases for ease of use
 
 You *could* always run your Docker image like this:
 
@@ -73,19 +97,36 @@ That will work, but yikes what a pain in the rear! Here are some alias suggestio
 
 **If your tag is "latest":**
 
-`alias go='docker run -v ${PWD}:/home/gocompiler/app go:latest '`
+```
+alias go='docker run -v ${PWD}:/home/gocompiler/app go:latest '
+alias fyne=`docker run -v ${PWD}:/home/gocompiler/app fyne:latest '
+```
 
 **If you have separate tags for each user:**
 
-**Yakko's alias:** `alias go='docker run -v ${PWD}:/home/gocompiler/app go:yakko '`
+**Yakko's aliases:** 
 
-**Wakko's alias:** `alias go='docker run -v ${PWD}:/home/gocompiler/app go:wakko '`
+```
+alias go='docker run -v ${PWD}:/home/gocompiler/app go:yakko '
+alias go='docker run -v ${PWD}:/home/gocompiler/app fyne:yakko '
+```
 
-**Dot's alias:** `alias go='docker run -v ${PWD}:/home/gocompiler/app go:dot '`
+**Wakko's aliases:** 
+
+```
+alias go='docker run -v ${PWD}:/home/gocompiler/app go:wakko '
+alias go='docker run -v ${PWD}:/home/gocompiler/app fyne:wakko '
+```
+
+**Dot's aliases:** 
+```
+alias go='docker run -v ${PWD}:/home/gocompiler/app go:dot '
+alias go='docker run -v ${PWD}:/home/gocompiler/app fyne:dot '
+```
 
 ---
 
-### Run Golang commands
+## Building Golang Programs
 
 Now that you have a convenient alias, you can run "go" commands as if Golang is installed locally.  For example, to initialize a new project and compile *hello world*:
 
@@ -112,9 +153,22 @@ func main() {
 
 ---
 
-### Shelling into the image
+## Building Fyne GUIs
 
-The script *run-go.sh* includes a clause that calls *snooze.sh*. That script is designed to sit in a slow loop while a file called *watchdog* is present. The idea is that you can start the Docker image in one terminal and then shell into it in another to snoop around.
+```bash
+mkdir fyne-app
+cd fyne-app
+fyne init   # Note that fyne creates a "Hello World" GUI app for you
+fyne build
+./app
+```
+
+
+---
+
+## Shelling into the image
+
+The scripts *run-go.sh* and *run-fyne.sh* include a clause that calls *snooze.sh*. That script is designed to sit in a slow loop while a file called *watchdog* is present. The idea is that you can start the Docker image in one terminal and then shell into it in another to snoop around.
 
 The following steps all assume you have added the alias described above such that the command `go` is sufficient to start the image. The basic steps for shelling into a Docker image are:
 
@@ -131,7 +185,7 @@ The following steps all assume you have added the alias described above such tha
 
 Those steps are not terribly difficult. However, laziness being one of the desired characteristics of a programmer - let's do it an easier way...
 
-**Step 1:** Add the following function to your ~/.bash_aliases
+- **Step 1:** Add the following function to your ~/.bash_aliases
 
 ```bash
 # A simple function to help one perform a 'docker exec'
@@ -149,12 +203,12 @@ function de () {
 }
 ```
 
-**Step 2:** Make sure you have your aliases loaded - either by logging out and back in again - or else for your current terminal with the command `source ~/.bash_aliases`
+- **Step 2:** Make sure you have your aliases loaded - either by logging out and back in again - or else for your current terminal with the command `source ~/.bash_aliases`
 
-**Step 3:** Start the Docker image in "snooze" mode `docker run go snooze`
+- **Step 3:** Start the Docker image in "snooze" mode `docker run go snooze`
 
-**Step 4:** Use your handy alias to shell into the Docker image `de go`
+- **Step 4:** Use your handy alias to shell into the Docker image `de go` or `de fyne` depending on which you started
 
-**Step 5:** Do whatever investigation suits your fancy
+- **Step 5:** Do whatever investigation suits your fancy
 
-**Step 6:** Close the session by deleting "watchdog" `rm ~/watchdog`
+- **Step 6:** Close the session by deleting "watchdog" `rm ~/watchdog`

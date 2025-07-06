@@ -31,45 +31,6 @@ RUN mkdir /home/gocompiler/app
 RUN chown gocompiler:gocompiler /home/gocompiler/app
 RUN chmod 775 /home/gocompiler/app
 
-
-# ------------------------------------------------------------------------------
-# Everything in this section is used for GUI programming
-
-RUN mkdir /home/gocompiler/fyne-source
-RUN chown gocompiler:gocompiler /home/gocompiler/fyne-source
-RUN chmod 775 /home/gocompiler/fyne-source
-
-RUN apt-get install -y \
-  libxrandr-dev \
-  libxcursor-dev \
-  libxinerama-dev \
-  libxi-dev \
-  libglx-dev \
-  libglu1-mesa-dev \
-  libx11-dev \
-  libxxf86vm-dev \
-  pkg-config
-
-USER gocompiler
-
-WORKDIR /home/gocompiler/fyne-source
-RUN cd /home/gocompiler/fyne-source ; \
-  go mod init fyne-source ; \
-  go get fyne.io/fyne/v2/app@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/driver/glfw@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/metadata@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/painter/gl@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/painter@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/svg@v2.6.1 ; \
-  go get fyne.io/fyne/v2/lang@v2.6.1 ; \
-  go get fyne.io/fyne/v2/storage/repository@v2.6.1 ; \
-  go get fyne.io/fyne/v2/widget@v2.6.1 ; \
-  go install fyne.io/fyne/v2/cmd/fyne_demo@latest
-
-# Delete everything in this section if you do not want GUI
-# ------------------------------------------------------------------------------
-
-
 USER gocompiler
 
 WORKDIR /home/gocompiler/app
