@@ -11,13 +11,14 @@ Point being that I want to specifically not have any Golang environment on my da
 **The basic steps for getting started are:**
 
 - Have the Docker container software installed on your local machine - details of which are beyond the scope of this document
-- Build the local image for *go* proper
-- Build the local image for *fyne*
+- Build the local image for *go*
 - Add a *go* alias for ease of use of Golang
 - Add a *fyne* alias for ease of use of Fyne
 - Run Golang commands as if "go" is installed locally
 - Run Fyne commands as if "fyne" is installed locally
 - Shell into the image to snoop around
+
+**One minor caveat:** "Fyne" will always tell you that you can run the command `go run .` after you initialize a project.  You can't actually do that. The reason is simple - "go" is running in a Docker image that started as Debian, and that Debian image does not have a GUI.  We've installed enough libraries such that we can *compile* a GUI, we did not install enough libraries such that we can *run* the GUI.
 
 ### You may also wish to look at [Getting Started](./GettingStarted.md)
 
@@ -64,27 +65,6 @@ From here out, my instructions assume you will always use the tag "go:latest".  
 
 `docker build --build-arg DUID=$(id -u dot) --build-arg DGID=$(id -g dot) -t go:dot .`
 
-### Building Fyne
-
-Be sure you have a working *go* image before trying this.  Your next commands will look similiar to what you did with *go* except that you are going to substitute "fyne" instead.  So examples are
-
-`docker build -t fyne:latest -f Dockerfile.fyne .`
-
-Or
-
-docker build --build-arg DUID=$(id -u) --build-arg DGID=$(id -g) -t fyne:latest .` 
-
-Or
-
-`docker build --build-arg DUID=$(id -u yakko) --build-arg DGID=$(id -g yakko) -t fyne:yakko .`
-
-`docker build --build-arg DUID=$(id -u wakko) --build-arg DGID=$(id -g wakko) -t fyne:wakko .`
-
-`docker build --build-arg DUID=$(id -u dot) --build-arg DGID=$(id -g dot) -t fyne:dot .`
-
-Depending on what you did for *go*.
-
-
 ---
 
 ### Adding aliases for ease of use
@@ -99,7 +79,7 @@ That will work, but yikes what a pain in the rear! Here are some alias suggestio
 
 ```
 alias go='docker run -v ${PWD}:/home/gocompiler/app go:latest '
-alias fyne=`docker run -v ${PWD}:/home/gocompiler/app fyne:latest '
+alias fyne='docker run --entrypoint /home/gocompiler/run-fyne.sh -v ${PWD}:/home/gocompiler/app go:latest '
 ```
 
 **If you have separate tags for each user:**
@@ -108,20 +88,20 @@ alias fyne=`docker run -v ${PWD}:/home/gocompiler/app fyne:latest '
 
 ```
 alias go='docker run -v ${PWD}:/home/gocompiler/app go:yakko '
-alias go='docker run -v ${PWD}:/home/gocompiler/app fyne:yakko '
+alias fyne='docker run --entrypoint /home/gocompiler/run-fyne.sh -v ${PWD}:/home/gocompiler/app go:yakko '
 ```
 
 **Wakko's aliases:** 
 
 ```
 alias go='docker run -v ${PWD}:/home/gocompiler/app go:wakko '
-alias go='docker run -v ${PWD}:/home/gocompiler/app fyne:wakko '
+alias fyne='docker run --entrypoint /home/gocompiler/run-fyne.sh -v ${PWD}:/home/gocompiler/app go:wakko '
 ```
 
 **Dot's aliases:** 
 ```
 alias go='docker run -v ${PWD}:/home/gocompiler/app go:dot '
-alias go='docker run -v ${PWD}:/home/gocompiler/app fyne:dot '
+alias fyne='docker run --entrypoint /home/gocompiler/run-fyne.sh -v ${PWD}:/home/gocompiler/app go:dot '
 ```
 
 ---
@@ -207,7 +187,7 @@ function de () {
 
 - **Step 3:** Start the Docker image in "snooze" mode `docker run go snooze`
 
-- **Step 4:** Use your handy alias to shell into the Docker image `de go` or `de fyne` depending on which you started
+- **Step 4:** Use your handy alias to shell into the Docker image `de go`
 
 - **Step 5:** Do whatever investigation suits your fancy
 
