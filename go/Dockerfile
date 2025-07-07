@@ -3,6 +3,19 @@ FROM golang:latest
 USER root
 
 RUN apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade && apt-get autoremove
+RUN apt-get install -y \
+  libxrandr-dev \
+  libxcursor-dev \
+  libxinerama-dev \
+  libxi-dev \
+  libglx-dev \
+  libglu1-mesa-dev \
+  libx11-dev \
+  libxxf86vm-dev \
+  libxkbcommon-dev \
+  pkg-config \
+  xz-utils
+
 
 ARG DUID
 ARG DGID
@@ -15,9 +28,37 @@ RUN if [ -z "$DGID" ]; then export DGID=1000 ; fi ;\
 
 WORKDIR /home/gocompiler
 
+RUN mkdir /home/gocompiler/fyne-source
+RUN chown gocompiler:gocompiler /home/gocompiler/fyne-source
+RUN chmod 775 /home/gocompiler/fyne-source
+
+USER gocompiler
+
+# This does the work of getting Fyne
+WORKDIR /home/gocompiler/fyne-source
+RUN cd /home/gocompiler/fyne-source ; \
+  go mod init fyne-source ; \
+  go get fyne.io/fyne/v2/app@v2.6.1 ; \
+  go get fyne.io/fyne/v2/internal/driver/glfw@v2.6.1 ; \
+  go get fyne.io/fyne/v2/internal/metadata@v2.6.1 ; \
+  go get fyne.io/fyne/v2/internal/painter/gl@v2.6.1 ; \
+  go get fyne.io/fyne/v2/internal/painter@v2.6.1 ; \
+  go get fyne.io/fyne/v2/internal/svg@v2.6.1 ; \
+  go get fyne.io/fyne/v2/lang@v2.6.1 ; \
+  go get fyne.io/fyne/v2/storage/repository@v2.6.1 ; \
+  go get fyne.io/fyne/v2/widget@v2.6.1 ; \
+  go install fyne.io/tools/cmd/fyne@latest ; \
+  go install fyne.io/fyne/v2/cmd/fyne_demo@latest
+
+USER root
+
 COPY run-go.sh /home/gocompiler/run-go.sh
 RUN chown gocompiler:gocompiler /home/gocompiler/run-go.sh
 RUN chmod 775 /home/gocompiler/run-go.sh
+
+COPY run-fyne.sh /home/gocompiler/run-fyne.sh
+RUN chown gocompiler:gocompiler /home/gocompiler/run-fyne.sh
+RUN chmod 775 /home/gocompiler/run-fyne.sh
 
 COPY snooze.sh /home/gocompiler/snooze.sh
 RUN chown gocompiler:gocompiler /home/gocompiler/snooze.sh
@@ -32,6 +73,15 @@ RUN chown gocompiler:gocompiler /home/gocompiler/app
 RUN chmod 775 /home/gocompiler/app
 
 USER gocompiler
+
+# This makes sure Fyne is avaliable to the local user
+RUN mkdir /home/gocompiler/tmp ; \
+  cd /home/gocompiler/tmp ; \
+  fyne init ; \
+  fyne build
+
+# No point in keeping the temp project around
+RUN rm -rf /home/gocompiler/tmp
 
 WORKDIR /home/gocompiler/app
 
