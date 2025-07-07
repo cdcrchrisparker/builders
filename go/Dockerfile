@@ -37,18 +37,9 @@ USER gocompiler
 # This does the work of getting Fyne
 WORKDIR /home/gocompiler/fyne-source
 RUN cd /home/gocompiler/fyne-source ; \
-  go mod init fyne-source ; \
-  go get fyne.io/fyne/v2/app@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/driver/glfw@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/metadata@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/painter/gl@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/painter@v2.6.1 ; \
-  go get fyne.io/fyne/v2/internal/svg@v2.6.1 ; \
-  go get fyne.io/fyne/v2/lang@v2.6.1 ; \
-  go get fyne.io/fyne/v2/storage/repository@v2.6.1 ; \
-  go get fyne.io/fyne/v2/widget@v2.6.1 ; \
   go install fyne.io/tools/cmd/fyne@latest ; \
-  go install fyne.io/fyne/v2/cmd/fyne_demo@latest
+  git clone https://github.com/fyne-io/demo.git . ; \
+  fyne build
 
 USER root
 
@@ -81,7 +72,9 @@ RUN mkdir /home/gocompiler/tmp ; \
   fyne build
 
 # No point in keeping the temp project around
+USER root
 RUN rm -rf /home/gocompiler/tmp
+USER gocompiler
 
 WORKDIR /home/gocompiler/app
 
