@@ -23,3 +23,10 @@ docker load -i image_name.tar
 ```
 
 
+---
+
+### I need to write this somewhere
+
+Cool video about Git
+
+[Git Will Finally Make Sense After This](https://www.youtube.com/watch?v=Ala6PHlYjmw)
