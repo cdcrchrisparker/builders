@@ -10,7 +10,7 @@ Be sure to start in the local [README](./README.md) file. Follow the instruction
 
 "Hello world" in golang is trivial. But once one starts writing real code, one will need to separate functions into modules and etcetera. How to do that is extremely simple once one understands the mechanism - the problem is that it's *so* easy that nobody bothers to give a simple working recipe.
 
-**NOTE:** For the purposes of this example, the full path that we will be using is ${HOME}/go-projects. Note that I use "${HOME}" instead of "\~" only because the "\~" is a little hard to see in code samples.
+**NOTE:** For the purposes of this example, the full path that we will be using is ${HOME}/recipe. Note that I use "${HOME}" instead of "\~" only because the "\~" is a little hard to see in code samples.
 
 ---
 
@@ -112,7 +112,7 @@ Notice the following points:
 Assuming you have met the requirements for running go commands, then you should be able to run the following:
 
 ```
-$ go run main.go 
+$ go run main.go
 Hello world!
 Goodbye cruel world!
 ```
