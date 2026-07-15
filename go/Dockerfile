@@ -8,18 +8,20 @@ RUN update-ca-certificates -v
 FROM base AS updated
 RUN apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade && apt-get autoremove
 RUN apt-get install -y \
-  libxrandr-dev \
+  libgl1-mesa-dev \
+  libglu1-mesa-dev \
+  libglx-dev \
+  libwayland-dev \
+  libxi-dev \
+  libx11-dev \
   libxcursor-dev \
   libxinerama-dev \
-  libxi-dev \
-  libglx-dev \
-  libglu1-mesa-dev \
-  libx11-dev \
-  libxxf86vm-dev \
-  libgl1-mesa-dev \
-  xorg-dev \
   libxkbcommon-dev \
+  libxrandr-dev \
+  libxxf86vm-dev \
   pkg-config \
+  wayland-protocols \
+  xorg-dev \
   xz-utils
 
 FROM updated AS userver
